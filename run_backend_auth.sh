@@ -5,11 +5,16 @@ REPO="git@github.com:adebanjo23/PredictLawCode.git"
 DIR="predict-law" # Change this to your repository's directory name
 
 
+SSH_KEY_PATH="$(pwd)/.ssh/id_ed25519"
+export GIT_SSH_COMMAND="ssh -i $SSH_KEY_PATH -o IdentitiesOnly=yes"
+
+
 # Check if the repository directory exists
 if [ ! -d "$DIR" ]; then
     echo "Repository directory does not exist. Cloning repository..."
     git clone $REPO $DIR
     cd $DIR
+    # Checkout to the develop branch after cloning
     git checkout develop
 else
     echo "Repository directory exists. Pulling latest changes..."
@@ -20,7 +25,7 @@ fi
 
 # Stop any running containers using the 'cleona_backend_image' image
 echo "Stopping any running containers..."
-docker ps -q --filter "ancestor=cleona_backend_image" | xargs -r docker stop
+docker ps -q --filter "ancestor=predict_law_image" | xargs -r docker stop
 
 # Continue with the Docker build and run process...
 echo "Building Docker image..."
